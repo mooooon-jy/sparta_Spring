@@ -21,7 +21,7 @@ public class NaverShopSearch {
 
         HttpEntity<String> requestEntity = new HttpEntity<String>(body, headers);
         ResponseEntity<String> responseEntity = rest.exchange("https://openapi.naver.com/v1/search/shop.json?query=" + query, HttpMethod.GET, requestEntity, String.class);
-        HttpStatus httpStatus = responseEntity.getStatusCode();
+        HttpStatus httpStatus = (HttpStatus) responseEntity.getStatusCode();
         int status = httpStatus.value();
         String response = responseEntity.getBody();
         System.out.println("Response status: " + status);
