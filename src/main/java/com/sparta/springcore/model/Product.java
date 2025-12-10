@@ -1,7 +1,7 @@
-package com.sparta.springcore.Model;
+package com.sparta.springcore.model;
 
-import com.sparta.springcore.Dto.ProductRequestDto;
-import com.sparta.springcore.Timestamped;
+import com.sparta.springcore.dto.ProductRequestDto;
+import com.sparta.springcore.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,5 +42,8 @@ public class Product extends Timestamped {
         this.link = requestDto.getLink();
         this.lprice = requestDto.getLprice();
         this.myprice = 0;
+    }
+
+    public void updateMyprice(int myPrice) {
     }
 }

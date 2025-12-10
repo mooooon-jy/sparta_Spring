@@ -1,6 +1,6 @@
-package com.sparta.springcore.Repository;
+package com.sparta.springcore.repository;
 
-import com.sparta.springcore.Model.Product;
+import com.sparta.springcore.model.Product;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -8,17 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductRepository {
+    private String dbId;
+    private String dbPassword;
+    private String dbUrl;
+
+    // 생성자
+    public ProductRepository(String dbId, String dbPassword, String dbUrl) {
+        this.dbId = dbId;
+        this.dbPassword = dbPassword;
+        this.dbUrl = dbUrl;
+    }
+
     public Product getProduct(Long id) throws SQLException {
         Product product = new Product();
-
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = DriverManager.getConnection(dbUrl, dbId, dbPassword);;
         // DB Query 작성
         PreparedStatement ps = connection.prepareStatement("select * from product where id = ?");
         ps.setLong(1, id);
         // DB Query 실행
         ResultSet rs = ps.executeQuery();
-
         if (rs.next()) {
             product.setId(rs.getLong("id"));
             product.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
@@ -31,13 +40,13 @@ public class ProductRepository {
         } else {
             return null;
         }
-
         return product;
     }
+
     public List<Product> getProducts() throws SQLException {
         ArrayList<Product> products = new ArrayList<>();
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = DriverManager.getConnection(dbUrl, dbId, dbPassword);;
         // DB Query 작성 및 실행
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("select * from product");
@@ -57,7 +66,6 @@ public class ProductRepository {
         // DB 연결 해제
         rs.close();
         connection.close();
-
         return products;
     }
 
@@ -65,9 +73,8 @@ public class ProductRepository {
         LocalDateTime now = LocalDateTime.now();
         product.setCreatedAt(now);
         product.setModifiedAt(now);
-
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = DriverManager.getConnection(dbUrl, dbId, dbPassword);;
         // DB Query 작성
         PreparedStatement ps = connection.prepareStatement("select max(id) as id from product");
         ResultSet rs = ps.executeQuery();
@@ -77,8 +84,6 @@ public class ProductRepository {
         } else {
             throw new SQLException("product 테이블의 마지막 id 값을 찾아오지 못했습니다.");
         }
-
-        // DB Query 작성
         ps = connection.prepareStatement("insert into product(id, title, image, link, lprice, myprice, created_at, modified_at) values(?, ?, ?, ?, ?, ?, ?, ?)");
         ps.setLong(1, product.getId());
         ps.setString(2, product.getTitle());
@@ -97,7 +102,7 @@ public class ProductRepository {
 
     public void updateProductMyPrice(Long id, int myPrice) throws SQLException {
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = DriverManager.getConnection(dbUrl, dbId, dbPassword);;
         // DB Query 작성
         PreparedStatement ps = connection.prepareStatement("update product set myprice = ?, modified_at = ? where id = ?");
         ps.setInt(1, myPrice);
