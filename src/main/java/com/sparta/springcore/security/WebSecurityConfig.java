@@ -12,26 +12,36 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // CSRF 설정 (Lambda 방식)
+        // CSRF 설정
         http.csrf((csrf) -> csrf.disable());
 
-        // H2 Console 등 사용을 위한 Frame Options 설정
+        // H2 Console 사용을 위한 설정
         http.headers((headers) -> headers
                 .frameOptions((frameOptions) -> frameOptions.disable())
         );
 
-        // 요청 권한 설정
+        // 1. 권한 설정 (authorizeHttpRequests)
         http.authorizeHttpRequests((authorize) -> authorize
+                // image 폴더를 login 없이 허용
+                .requestMatchers("/images/**").permitAll()
+                // css 폴더를 login 없이 허용
+                .requestMatchers("/css/**").permitAll()
+                // 회원 관리 처리 API (로그인 페이지 등)도 허용 필요
+                .requestMatchers("/user/**").permitAll()
+                // 그 외 모든 요청은 인증과정 필요
                 .anyRequest().authenticated()
         );
 
-        // 로그인 설정
+        // 2. 로그인 설정 (formLogin)
         http.formLogin((form) -> form
-                .defaultSuccessUrl("/")
+                .loginPage("/user/login")          // 로그인 View 페이지
+                .loginProcessingUrl("/user/login") // 로그인 처리 (POST) URL
+                .defaultSuccessUrl("/")            // 로그인 성공 시 이동할 페이지
+                .failureUrl("/user/login/error")   // 로그인 실패 시 이동할 페이지
                 .permitAll()
         );
 
-        // 로그아웃 설정
+        // 3. 로그아웃 설정 (logout)
         http.logout((logout) -> logout
                 .permitAll()
         );
