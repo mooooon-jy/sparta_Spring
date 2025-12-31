@@ -1,12 +1,10 @@
 package com.sparta.springcore.model;
 
 import com.sparta.springcore.dto.ProductRequestDto;
-import com.sparta.springcore.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Setter
 @Getter // get 함수를 일괄적으로 만들어줍니다.
@@ -45,5 +43,6 @@ public class Product extends Timestamped {
     }
 
     public void updateMyprice(int myPrice) {
+        this.myprice = myPrice;
     }
 }

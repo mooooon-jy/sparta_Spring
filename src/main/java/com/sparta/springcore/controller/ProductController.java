@@ -24,7 +24,7 @@ public class ProductController {
 
     // 등록된 전체 상품 목록 조회
     @GetMapping("/api/products")
-    public List<Product> getProducts() throws SQLException {
+    public List<Product> getProducts() {
         List<Product> products = productService.getProducts();
         // 응답 보내기
         return products;
@@ -32,7 +32,7 @@ public class ProductController {
 
     // 신규 상품 등록
     @PostMapping("/api/products")
-    public Product createProduct(@RequestBody ProductRequestDto requestDto) throws SQLException {
+    public Product createProduct(@RequestBody ProductRequestDto requestDto) {
         Product product = productService.createProduct(requestDto);
         // 응답 보내기
         return product;
@@ -40,7 +40,7 @@ public class ProductController {
 
     // 설정 가격 변경
     @PutMapping("/api/products/{id}")
-    public Long updateProduct(@PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto) throws SQLException {
+    public Long updateProduct(@PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto) {
         Product product = productService.updateProduct(id, requestDto);
         return product.getId();
     }
